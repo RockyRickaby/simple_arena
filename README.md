@@ -21,12 +21,32 @@ $ cmake --build build
 ```
 
 This will build a static library. To build a shared library version, define the
-BUILD_SHARED_LIBS variable in the generation step like this `cmake -DBUILD_SHARED_LIBS -B build`.
+BUILD_SHARED_LIBS variable in the generation step like this:
+
+```bash
+$ cmake -DBUILD_SHARED_LIBS -B build
+```
+
 In order to choose between Debug and Release builds, It is necessary to first
 declare the variable CMAKE_BUILD_TYPE with the value of the desired build as a string.
-Example: `CMAKE_BUILD_TYPE=Debug cmake -B build`. It is also possible to select a preset
+
+```bash
+$ CMAKE_BUILD_TYPE=Debug cmake -B build # this is case sensitive
+or 
+$ cmake -DCMAKE_BUILD_TYPE=Debug -B build
+```
+
+It is also possible to select a preset
 in order to enable compilation warnings by settings the parameter `--preset` in the generation step.
-Check `CMakePresets.json` for a list of defined presets. Example: `cmake -B build --preset=clang`.
+Check `CMakePresets.json` for a list of defined presets.
+
+```bash
+$ cmake -B build --preset=clang
+```
 
 There is a target called `test` that builds a little program that can be used to mess around with the implementation.
-It's not a proper unit test implementation. It can be built with `cmake --build build --target test`.
+It's not a proper unit test implementation. It can be built with:
+
+```bash
+$ cmake --build build --target test
+```
