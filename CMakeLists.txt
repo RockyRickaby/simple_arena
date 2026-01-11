@@ -8,26 +8,33 @@ add_executable(test
     src/test.c
 )
 # so simple. I wonder how hard it can get (I'm sure it can get much harder, though)
-add_library(arena
-    src/arena.c
-)
+add_library(arena)
+    # src/arena.c
+# )
 
 set(public_headers
     src/align.h
     src/arena.h
 )
-# target_sources(arena
-#     PRIVATE
-#         src/arena.c
-#     PUBLIC
-#         FILE_SET arena
-#         TYPE HEADERS
-#         # BASE_DIRS
-#         #     include
-#         FILES
-#             src/arena.h
-#             #include/header.h
-# )
+
+set_target_properties(arena PROPERTIES
+    PUBLIC_HEADER "${public_headers}"
+)
+
+# idek
+target_sources(arena
+    PRIVATE
+        src/arena.c
+    PUBLIC
+        FILE_SET arena
+        TYPE HEADERS
+        BASE_DIRS
+            src
+        FILES
+            src/arena.h
+            src/align.h
+)
+
 target_compile_features(arena PUBLIC ${needed_features})
 target_compile_features(test PUBLIC ${needed_features})
 
