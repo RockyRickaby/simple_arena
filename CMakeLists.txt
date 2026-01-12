@@ -15,6 +15,7 @@ add_library(arena)
 set(public_headers
     src/align.h
     src/arena.h
+    src/sizes.h
 )
 
 set_target_properties(arena PROPERTIES
