@@ -2,6 +2,7 @@
 #define ARENA_ALLOC_H
 
 #include <stddef.h> // size_t
+#include <stdalign.h>
 
 #define ARENA_PUSH_ARRAY(arena, _Type, count, effective_size_out) arena_push((arena), sizeof(_Type) * (count), alignof(_Type), effective_size_out)
 #define ARENA_PUSH_ARRAY_ZERO(arena, _Type, count, effective_size_out) arena_push_zero((arena), sizeof(_Type) * (count), alignof(_Type), effective_size_out)
