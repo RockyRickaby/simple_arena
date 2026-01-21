@@ -39,10 +39,10 @@ target_sources(arena
 target_compile_features(arena PUBLIC ${needed_features})
 target_compile_features(test PUBLIC ${needed_features})
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    # target_compile_definitions(test PRIVATE ARENA_DEBUG)
-    target_compile_definitions(arena PUBLIC ARENA_DEBUG)
-endif()
+target_compile_definitions(arena
+    PUBLIC
+        $<$<CONFIG:Debug>:ARENA_DEBUG>
+)
 
 target_link_libraries(test arena) # might be convenient for later
 

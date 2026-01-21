@@ -151,7 +151,7 @@ void arena_fprint_bytes(FILE *output, const Arena *arena) {
     fprintf(output, "\n"); // ????
 }
 #else
-void arena_fprint_bytes(FILE *output, Arena *arena) {
+void arena_fprint_bytes(FILE *output, const Arena *arena) {
     fprintf(output, "\n");
     return;
 }
