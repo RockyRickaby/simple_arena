@@ -127,5 +127,32 @@ void arena_clear(Arena *arena) {
 void arena_clear_zero(Arena *arena) {
     if (!arena) return;
     arena_clear(arena);
-    memset(arena + ARENA_ALIGN, 0, arena->reserve_size);
+    memset(arena + 1, 0, arena->reserve_size);
 }
+
+void arena_print_bytes(const Arena *arena) {
+    arena_fprint_bytes(stdout, arena);
+}
+
+#ifdef ARENA_DEBUG
+void arena_fprint_bytes(FILE *output, const Arena *arena) {
+    size_t end = arena->start + arena->reserve_size;
+    const char *ptr = (char*)arena;
+    int count = 0;
+    fprintf(output, "   ");
+    for (size_t i = 0; i < end; i++) {
+        if (count >= 16) {
+            fprintf(output, "\n   ");
+            count = 0;
+        }
+        fprintf(output, "%02hhX ", ptr[i]);
+        count++;
+    }
+    fprintf(output, "\n"); // ????
+}
+#else
+void arena_fprint_bytes(FILE *output, Arena *arena) {
+    fprintf(output, "\n");
+    return;
+}
+#endif // ARENA_DEBUG

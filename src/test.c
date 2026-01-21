@@ -13,17 +13,21 @@ extern "C" {}
 #include "align.h"
 
 int main(void) {
-    Arena *ar = arena_create(5);
+    Arena *ar = arena_create(4);
+    arena_print_bytes(ar);
+
     size_t pos = arena_get_pos(ar);
     printf("%lu\n", pos);
-    int k;
     size_t out;
-    ARENA_PUSH(ar, int, &out);
+    int *ptr = ARENA_PUSH(ar, int, &out);
+    *ptr = ~(1 << 31);
     pos = arena_get_pos(ar);
+    arena_print_bytes(ar);
     // arena_push(ar, 13, 4, &out);
     // arena_pop_to(ar, pos + 1);
 
     // int c = getc(stdin);
     arena_clear_zero(ar);
+    arena_print_bytes(ar);
     arena_destroy(ar);
 }
