@@ -53,6 +53,7 @@ Arena *arena_create(size_t reserve_size) {
 
 void arena_destroy(Arena* arena) {
     if (!arena) return;
+    ARENA_LOG(stdout, ARENA_LOG_INFO, "Destroying (freeing) arena", NULL);
     arena->start = 0;
     arena->end = 0;
     arena->reserve_size = 0;
@@ -64,16 +65,16 @@ void *arena_push(Arena *arena, size_t bytes, size_t align, size_t *effective_siz
     if (!(arena && bytes != 0 && IS_POW_2(align) && bytes <= (arena->end - arena->start))) {
         if (ARENA_DEBUG_ENABLE) {
             if (!arena) {
-                ARENA_LOG(stdout, ARENA_LOG_ERR, "Parameter 'arena' is null. No allocations were made", NULL);
+                ARENA_LOG(stderr, ARENA_LOG_ERR, "Parameter 'arena' is null. No allocations were made", NULL);
             }
             if (!bytes) {
-                ARENA_LOG(stdout, ARENA_LOG_ERR, "Parameter 'bytes' is zero. No allocations were made", NULL);   
+                ARENA_LOG(stderr, ARENA_LOG_ERR, "Parameter 'bytes' is zero. No allocations were made", NULL);   
             }
             if (!IS_POW_2(align)) {
-                ARENA_LOG(stdout, ARENA_LOG_ERR, "Parameter 'align' is not a power of two. Parameter value: %"PRIu64". No allocations were made", align);
+                ARENA_LOG(stderr, ARENA_LOG_ERR, "Parameter 'align' is not a power of two. Parameter value: %"PRIu64". No allocations were made", align);
             }
             if (bytes > (arena->end - arena->start)) {
-                ARENA_LOG(stdout, ARENA_LOG_ERR, "Not enough space for the allocation of %"PRIu64" bytes. No allocations were made", bytes);
+                ARENA_LOG(stderr, ARENA_LOG_ERR, "Not enough space for the allocation of %"PRIu64" bytes. No allocations were made", bytes);
             }
         }
         return NULL;
@@ -85,7 +86,7 @@ void *arena_push(Arena *arena, size_t bytes, size_t align, size_t *effective_siz
     ptr &= ~(align - 1); // align down according to the user's alignment requirements 
     if (ptr < arena->start) {
         effective_size_out ? *effective_size_out = 0 : 0;
-        ARENA_LOG(stdout, ARENA_LOG_ERR, "Not enough space for the allocation of %"PRIu64 " bytes with alignment %"PRIu64, bytes, align);
+        ARENA_LOG(stderr, ARENA_LOG_ERR, "Not enough space for the allocation of %"PRIu64 " bytes with alignment %"PRIu64, bytes, align);
         return NULL;
     }
     // char *out = (char*)arena + arena->start;
