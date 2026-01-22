@@ -59,17 +59,21 @@ void arena_destroy(Arena* arena) {
     free(arena);
 }
 
+// TODO - calculate free space remaining when deciding to allocate more space
 void *arena_push(Arena *arena, size_t bytes, size_t align, size_t *effective_size_out) {
-    if (!(arena && bytes != 0 && IS_POW_2(align))) {
+    if (!(arena && bytes != 0 && IS_POW_2(align) && bytes <= (arena->end - arena->start))) {
         if (ARENA_DEBUG_ENABLE) {
             if (!arena) {
-                ARENA_LOG(stdout, ARENA_LOG_WARN, "parameter 'arena' is null. No allocations were made", NULL);
+                ARENA_LOG(stdout, ARENA_LOG_ERR, "Parameter 'arena' is null. No allocations were made", NULL);
             }
             if (!bytes) {
-                ARENA_LOG(stdout, ARENA_LOG_WARN, "parameter 'bytes' is zero. No allocations were made", NULL);   
+                ARENA_LOG(stdout, ARENA_LOG_ERR, "Parameter 'bytes' is zero. No allocations were made", NULL);   
             }
             if (!IS_POW_2(align)) {
-                ARENA_LOG(stdout, ARENA_LOG_WARN, "parameter 'align' is not a power of two. Parameter value: %"PRIu64". No allocations were made", align);
+                ARENA_LOG(stdout, ARENA_LOG_ERR, "Parameter 'align' is not a power of two. Parameter value: %"PRIu64". No allocations were made", align);
+            }
+            if (bytes > (arena->end - arena->start)) {
+                ARENA_LOG(stdout, ARENA_LOG_ERR, "Not enough space for the allocation of %"PRIu64" bytes. No allocations were made", bytes);
             }
         }
         return NULL;
@@ -81,7 +85,7 @@ void *arena_push(Arena *arena, size_t bytes, size_t align, size_t *effective_siz
     ptr &= ~(align - 1); // align down according to the user's alignment requirements 
     if (ptr < arena->start) {
         effective_size_out ? *effective_size_out = 0 : 0;
-        ARENA_LOG(stdout, ARENA_LOG_WARN, "Not enough space for the allocation of %"PRIu64 " bytes with alignment %"PRIu64, bytes, align);
+        ARENA_LOG(stdout, ARENA_LOG_ERR, "Not enough space for the allocation of %"PRIu64 " bytes with alignment %"PRIu64, bytes, align);
         return NULL;
     }
     // char *out = (char*)arena + arena->start;
